@@ -15,7 +15,7 @@ app.include_router(auth.router)
 
 # Allowed origins — replace with your actual frontend domains
 origins = [
-    "https://app.spheruloo.com",   # Production frontend
+    "https://app.theraneusis.com",   # Production frontend
     "http://localhost:3000",       # Local development
 ]
 
