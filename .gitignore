@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environments
+venv/
+.env/
+*.env
+
+# Pytest cache
+.cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# Docker
+*.log
+docker-data/
+docker-volumes/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# Alembic migrations cache
+alembic/__pycache__/
+
+# System files
+.DS_Store
+Thumbs.db
+
