@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from app.core.database import get_db
 from app.schemas.user import UserCreate, UserOut
-from app.schemas.auth import Token
+from app.schemas.auth import Token, LoginPayload
 from app.services.auth_service import register_user, authenticate_user, login_user
 from app.core.security import create_email_verification_token
 from app.services.email_service import send_verification_email
@@ -17,7 +17,6 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 def register(user_in: UserCreate, db: Session = Depends(get_db)):
     tenant_id = "default-tenant"  # Replace with real tenant logic
     user = register_user(db, user_in, tenant_id)
-
     # Create verification token and send email
     token = create_email_verification_token(user.id)
     send_verification_email(user.email, token)
@@ -26,8 +25,8 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=Token)
-def login(email: str, password: str, db: Session = Depends(get_db)):
-    user = authenticate_user(db, email, password)
+def login(payload: LoginPayload, db: Session = Depends(get_db)):
+    user = authenticate_user(db, payload.email, payload.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials"

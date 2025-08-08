@@ -8,3 +8,8 @@ class Token(BaseModel):
 class TokenPayload(BaseModel):
     sub: str
     tenant_id: str
+
+
+class LoginPayload(BaseModel):
+    email: EmailStr
+    password: str
