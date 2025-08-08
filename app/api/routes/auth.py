@@ -49,10 +49,9 @@ def verify_email(token: str, email: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    if user.is_verified:
-        return {"message": "Email is already verified"}
+    if not user.is_verified:
+        user.is_verified = True
+        db.commit()
 
-    user.is_verified = True
-    db.commit()
     return {"message": "Email verified successfully"}
 

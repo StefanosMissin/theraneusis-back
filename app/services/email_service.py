@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from app.core.config import settings
 
 def send_verification_email(email: str, token: str):
-    link = f"https://api.theraneusis.com/auth/verify-email?token={token}&email={email}"
+    link = f"https://theraneusis.com/auth/login?token={token}&email={email}"
 
     # HTML email with a button
     html_content = f"""
