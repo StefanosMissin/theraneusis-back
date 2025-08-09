@@ -5,7 +5,7 @@ from app.core.database import Base, engine
 from app import models  # Import models so SQLAlchemy sees them
 import os
 
-app = FastAPI(title="Psych Platform API")
+app = FastAPI(title="Theraneusis Platform API")
 
 # Create tables automatically at startup (skip Alembic)
 Base.metadata.create_all(bind=engine)
@@ -30,4 +30,4 @@ app.add_middleware(
 
 @app.get("/")
 def root():
-    return {"message": "Backend is running securely!"}
+    return {"message": "Theraneusis API is running!"}

@@ -40,18 +40,19 @@ def verify_email(token: str, email: str, db: Session = Depends(get_db)):
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         user_id = payload.get("sub")
         if user_id is None:
-            raise HTTPException(status_code=400, detail="Invalid token payload")
+            return {"success": False, "error": "Invalid token payload"}
+
+        user = db.query(User).filter(User.id == user_id, User.email == email).first()
+        if not user:
+            return {"success": False, "error": "User not found"}
+
+        if not user.is_verified:
+            user.is_verified = True
+            db.commit()
+
+        return {"success": True, "message": "Email verified successfully"}
+
     except JWTError:
-        raise HTTPException(status_code=400, detail="Invalid or expired token")
+        return {"success": False, "error": "Invalid or expired token"}
 
-    # Match both user_id and email
-    user = db.query(User).filter(User.id == user_id, User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not user.is_verified:
-        user.is_verified = True
-        db.commit()
-
-    return {"message": "Email verified successfully"}
 
