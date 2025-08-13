@@ -3,21 +3,41 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from app.core.database import get_db
 from app.schemas.user import UserCreate, UserOut
-from app.schemas.auth import Token, LoginPayload
+from app.schemas.auth import Token, LoginPayload, RegisterPayload
 from app.services.auth_service import register_user, authenticate_user, login_user
 from app.core.security import create_email_verification_token
 from app.services.email_service import send_verification_email
 from app.core.config import settings
 from app.models.user import User
+import requests
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.post("/register", response_model=UserOut)
-def register(user_in: UserCreate, db: Session = Depends(get_db)):
+def register(payload: RegisterPayload, db: Session = Depends(get_db)):
+    # Verify Turnstile token
+    verify_url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+    data = {
+        "secret": settings.TURNSTILE_SECRET_KEY,
+        "response": payload.turnstile_token,
+    }
+    resp = requests.post(verify_url, data=data)
+    result = resp.json()
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Invalid CAPTCHA")
+
+    # Prepare user input for registration
+    user_in = UserCreate(
+        first_name=payload.first_name,
+        last_name=payload.last_name,
+        full_name=payload.full_name,
+        email=payload.email,
+        password=payload.password,
+        role=payload.role,
+    )
     tenant_id = "default-tenant"  # Replace with real tenant logic
     user = register_user(db, user_in, tenant_id)
-    # Create verification token and send email
     token = create_email_verification_token(user.id)
     send_verification_email(user.email, token)
 
