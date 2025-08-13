@@ -13,3 +13,13 @@ class TokenPayload(BaseModel):
 class LoginPayload(BaseModel):
     email: EmailStr
     password: str
+
+class RegisterPayload(BaseModel):
+    first_name: str
+    last_name: str
+    full_name: str
+    email: EmailStr
+    password: str
+    confirm_password: str
+    role: str
+    turnstile_token: str
