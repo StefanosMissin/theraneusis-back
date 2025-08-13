@@ -10,3 +10,4 @@ pydantic
 python-dotenv
 pydantic-settings
 email-validator
+requests
