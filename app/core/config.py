@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import SecretStr
 
 class Settings(BaseSettings):
     # Database
@@ -17,8 +18,13 @@ class Settings(BaseSettings):
     EMAIL_PASSWORD: str
     EMAIL_FROM: str
 
+    # Turnstile (Cloudflare)
+    TURNSTILE_SECRET_KEY: SecretStr
+    TURNSTILE_SITE_KEY: str
+
     class Config:
         env_file = ".env"
+        case_sensitive = False 
         extra = "ignore"  # Ignore extra env vars without raising an error
 
 

@@ -19,7 +19,7 @@ def register(payload: RegisterPayload, db: Session = Depends(get_db)):
     # Verify Turnstile token
     verify_url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
     data = {
-        "secret": settings.TURNSTILE_SECRET_KEY,
+        "secret": settings.TURNSTILE_SECRET_KEY.get_secret_value(),
         "response": payload.turnstile_token,
     }
     resp = requests.post(verify_url, data=data)
@@ -42,6 +42,7 @@ def register(payload: RegisterPayload, db: Session = Depends(get_db)):
     send_verification_email(user.email, token)
 
     return user
+
 
 
 @router.post("/login", response_model=Token)
