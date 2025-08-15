@@ -79,7 +79,32 @@ def verify_email(token: str, email: str, db: Session = Depends(get_db)):
 
 @router.post("/logout")
 def logout(response: Response):
-    # Remove the cookies by setting them with expired max-age
-    response.delete_cookie("access_token", path="/", httponly=True, secure=True, samesite="lax")
-    response.delete_cookie("refresh_token", path="/", httponly=True, secure=True, samesite="lax")
+    response.set_cookie(
+        key="access_token",
+        value="",
+        max_age=0,
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value="",
+        max_age=0,
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    )
+    response.set_cookie(
+        key="token_type",
+        value="",
+        max_age=0,
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="lax"
+    )
     return {"message": "Logged out successfully"}
+
