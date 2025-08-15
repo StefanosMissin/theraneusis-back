@@ -113,6 +113,18 @@ def logout(response: Response):
 
 @router.post("/request-password-reset")
 def request_password_reset(payload: PasswordResetRequest, db: Session = Depends(get_db)):
+    # ✅ Turnstile CAPTCHA validation
+    verify_url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+    data = {
+        "secret": settings.TURNSTILE_SECRET_KEY.get_secret_value(),
+        "response": payload.turnstile_token,
+    }
+    resp = requests.post(verify_url, data=data)
+    result = resp.json()
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Invalid CAPTCHA")
+
+    # ✅ Continue with reset flow
     user = db.query(User).filter(User.email == payload.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="Email not found")
@@ -127,6 +139,18 @@ def request_password_reset(payload: PasswordResetRequest, db: Session = Depends(
 
 @router.post("/reset-password")
 def reset_password(payload: PasswordResetPayload, db: Session = Depends(get_db)):
+    # ✅ Turnstile CAPTCHA validation
+    verify_url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+    data = {
+        "secret": settings.TURNSTILE_SECRET_KEY.get_secret_value(),
+        "response": payload.turnstile_token,
+    }
+    resp = requests.post(verify_url, data=data)
+    result = resp.json()
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Invalid CAPTCHA")
+
+    # ✅ Token verification and password update
     try:
         decoded = jwt.decode(payload.token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
         user_id = decoded.get("sub")
@@ -141,3 +165,4 @@ def reset_password(payload: PasswordResetPayload, db: Session = Depends(get_db))
     db.commit()
 
     return {"message": "Password updated successfully"}
+

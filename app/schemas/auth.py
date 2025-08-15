@@ -26,8 +26,10 @@ class RegisterPayload(BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+    turnstile_token: str
 
 
 class PasswordResetPayload(BaseModel):
     token: str
     password: str
+    turnstile_token: str
