@@ -3,12 +3,13 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from app.core.database import get_db
 from app.schemas.user import UserCreate, UserOut
-from app.schemas.auth import Token, LoginPayload, RegisterPayload
-from app.services.auth_service import register_user, authenticate_user, login_user
+from app.schemas.auth import Token, LoginPayload, RegisterPayload, PasswordResetRequest, PasswordResetPayload 
+from app.services.auth_service import register_user, authenticate_user, login_user, get_password_hash, get_password_reset_token    
 from app.core.security import create_email_verification_token
-from app.services.email_service import send_verification_email
+from app.services.email_service import send_verification_email, send_password_reset_email
 from app.core.config import settings
 from app.models.user import User
+from datetime import datetime, timedelta
 import requests
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -108,3 +109,35 @@ def logout(response: Response):
     )
     return {"message": "Logged out successfully"}
 
+
+
+@router.post("/request-password-reset")
+def request_password_reset(payload: PasswordResetRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Email not found")
+
+    expire = datetime.utcnow() + timedelta(hours=24)
+    token_data = {"sub": user.id, "exp": expire}
+    token = jwt.encode(token_data, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+
+    send_password_reset_email(email=user.email, first_name=user.first_name, token=token)
+    return {"message": "Reset link sent to your email."}
+
+
+@router.post("/reset-password")
+def reset_password(payload: PasswordResetPayload, db: Session = Depends(get_db)):
+    try:
+        decoded = jwt.decode(payload.token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        user_id = decoded.get("sub")
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.hashed_password = get_password_hash(payload.password)
+    db.commit()
+
+    return {"message": "Password updated successfully"}

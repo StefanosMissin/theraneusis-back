@@ -23,3 +23,11 @@ class RegisterPayload(BaseModel):
     confirm_password: str
     role: str
     turnstile_token: str
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetPayload(BaseModel):
+    token: str
+    password: str
