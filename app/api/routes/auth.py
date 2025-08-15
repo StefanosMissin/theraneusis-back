@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from app.core.database import get_db
@@ -77,3 +77,9 @@ def verify_email(token: str, email: str, db: Session = Depends(get_db)):
         return {"success": False, "error": "Invalid or expired token"}
 
 
+@router.post("/logout")
+def logout(response: Response):
+    # Remove the cookies by setting them with expired max-age
+    response.delete_cookie("access_token", path="/", httponly=True, secure=True, samesite="lax")
+    response.delete_cookie("refresh_token", path="/", httponly=True, secure=True, samesite="lax")
+    return {"message": "Logged out successfully"}
