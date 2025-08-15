@@ -19,5 +19,6 @@ class UserOut(UserBase):
     id: str
     tenant_id: str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
