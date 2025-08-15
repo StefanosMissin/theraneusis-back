@@ -7,21 +7,28 @@ def send_verification_email(email: str, token: str):
 
     # HTML email with a button
     html_content = f"""
-    <html>
+        <html>
         <body style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="text-align: center;">Welcome to THERANEUSIS!</h2>
-            <p style="text-align: center; margin: 15px auto;">Thank you for registering. Please click the button below to verify your account:</p>
-            <p style="text-align: center;">
-                <a href="{link}" 
-                   style="background-color: #4CAF50; color: white; padding: 12px 20px; 
-                          text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; marin-top: 15px; maring-bottom: 15px;">
-                    Verify My Account
-                </a>
+            <h2 style="text-align: center;">Καλώς ήρθατε στο THERANEUSIS!</h2>
+            <p style="text-align: center; margin: 15px auto;">
+            Σας ευχαριστούμε για την εγγραφή σας. Παρακαλούμε πατήστε το παρακάτω κουμπί για να επαληθεύσετε τον λογαριασμό σας:
             </p>
-            <p style="text-align: center; margin: 15px auto;">If the button doesn't work, copy and paste the following link into your browser:</p>
-            <p style="text-align: center; margin: 15px auto;"><a href="{link}">{link}</a></p>
+            <p style="text-align: center;">
+            <a href="{link}"
+                style="background-color: #4CAF50; color: white; padding: 12px 20px; 
+                        text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; margin-top: 15px; margin-bottom: 15px;">
+                Επαλήθευση Λογαριασμού
+            </a>
+            </p>
+            <p style="text-align: center; margin: 15px auto;">
+            Αν το κουμπί δεν λειτουργεί, αντιγράψτε και επικολλήστε τον παρακάτω σύνδεσμο στον περιηγητή σας:
+            </p>
+            <p style="text-align: center; margin: 15px auto;">
+            <a href="{link}">{link}</a>
+            </p>
         </body>
-    </html>
+        </html>
+
     """
 
     msg = MIMEText(html_content, "html")
@@ -39,27 +46,32 @@ def send_password_reset_email(email: str, first_name: str, token: str):
     link = f"https://theraneusis.com/auth/lost-password/reset?token={token}"
 
     html_content = f"""
-    <html>
+        <html>
         <body style="font-family: Arial, sans-serif; color: #333;">
-            <h2 style="text-align: center;">Reset Your Password</h2>
-            <p style="text-align: center; margin: 15px auto;">Hello {first_name},</p>
+            <h2 style="text-align: center;">Επαναφορά Κωδικού Πρόσβασης</h2>
+            <p style="text-align: center; margin: 15px auto;">Γεια σου {first_name},</p>
             <p style="text-align: center; margin: 15px auto;">
-                We received a request to reset your password. Click the button below to choose a new one:
+            Λάβαμε αίτημα για επαναφορά του κωδικού πρόσβασής σας. Κάντε κλικ στο παρακάτω κουμπί για να ορίσετε νέο κωδικό:
             </p>
             <p style="text-align: center;">
-                <a href="{link}" 
-                   style="background-color: #1A5362; color: white; padding: 12px 20px; 
-                          text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; margin-top: 15px; margin-bottom: 15px;">
-                    Reset My Password
-                </a>
+            <a href="{link}"
+                style="background-color: #1A5362; color: white; padding: 12px 20px;
+                        text-decoration: none; border-radius: 5px; font-size: 16px; display: inline-block; margin-top: 15px; margin-bottom: 15px;">
+                Επαναφορά Κωδικού
+            </a>
             </p>
             <p style="text-align: center; margin: 15px auto;">
-                This link will expire in 24 hours. If you did not request this, you can safely ignore this email.
+            Αυτός ο σύνδεσμος θα λήξει σε 24 ώρες. Αν δεν κάνατε εσείς το αίτημα, μπορείτε απλώς να αγνοήσετε αυτό το email.
             </p>
-            <p style="text-align: center; margin: 15px auto;">If the button doesn't work, copy and paste the following link into your browser:</p>
-            <p style="text-align: center; margin: 15px auto;"><a href="{link}">{link}</a></p>
+            <p style="text-align: center; margin: 15px auto;">
+            Αν το κουμπί δεν λειτουργεί, αντιγράψτε και επικολλήστε τον παρακάτω σύνδεσμο στον περιηγητή σας:
+            </p>
+            <p style="text-align: center; margin: 15px auto;">
+            <a href="{link}">{link}</a>
+            </p>
         </body>
-    </html>
+        </html>
+
     """
 
     msg = MIMEText(html_content, "html")
