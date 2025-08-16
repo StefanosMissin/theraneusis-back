@@ -166,3 +166,11 @@ def reset_password(payload: PasswordResetPayload, db: Session = Depends(get_db))
 
     return {"message": "Password updated successfully"}
 
+
+@router.get("/me", response_model=UserOut)
+def get_current_user_info(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return current_user
+
