@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 from app.core.database import get_db
 from app.schemas.user import UserCreate, UserOut
 from app.schemas.auth import Token, LoginPayload, RegisterPayload, PasswordResetRequest, PasswordResetPayload 
-from app.services.auth_service import register_user, authenticate_user, login_user, get_password_hash    
+from app.services.auth_service import register_user, authenticate_user, login_user, get_password_hash, get_current_user    
 from app.core.security import create_email_verification_token
 from app.services.email_service import send_verification_email, send_password_reset_email
 from app.core.config import settings
